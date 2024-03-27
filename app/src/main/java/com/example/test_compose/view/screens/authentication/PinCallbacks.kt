@@ -1,12 +1,13 @@
 package com.example.test_compose.view.screens.authentication
 
-data class PinState(
-    val pin: String,
-    val pinButtonEnabled: Boolean,
-    val pinError: Boolean,
-)
+
 
 interface PinCallbacks {
     fun onPinChange(pin: String)
     fun onPinUnlockClick()
+}
+
+val noOpPinCallbacks = object : PinCallbacks {
+    override fun onPinChange(pin: String) = Unit
+    override fun onPinUnlockClick() = Unit
 }

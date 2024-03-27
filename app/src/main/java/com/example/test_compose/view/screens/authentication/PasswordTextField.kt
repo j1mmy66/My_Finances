@@ -1,26 +1,37 @@
 package com.example.test_compose.view.screens.authentication
 
+import BiometricPromptSampleTheme
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.TextFieldColors
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.test_compose.R
-import androidx.compose.ui.Modifier
+import com.example.test_compose.ui.theme.MarginDouble
 
-@OptIn(ExperimentalMaterial3Api::class)
+
+
 @Composable
 fun PasswordTextField(
     value: String,
@@ -29,15 +40,14 @@ fun PasswordTextField(
     enabled: Boolean = true,
     isError: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     label: @Composable (() -> Unit)? = null,
     colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors()
 ) {
-    // 1
     var passwordVisible: Boolean by rememberSaveable {
         mutableStateOf(false)
     }
 
-    // 2
     PasswordTextField(
         value = value,
         onValueChange = onValueChange,
@@ -47,12 +57,12 @@ fun PasswordTextField(
         enabled = enabled,
         isError = isError,
         keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         label = label,
         colors = colors,
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordTextField(
     value: String,
@@ -63,10 +73,10 @@ fun PasswordTextField(
     enabled: Boolean = true,
     isError: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     label: @Composable (() -> Unit)? = null,
     colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors()
 ) {
-
     OutlinedTextField(
         value = value,
         label = label,
@@ -74,6 +84,7 @@ fun PasswordTextField(
         isError = isError,
         singleLine = true,
         keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         visualTransformation = if (passwordVisible) {
             VisualTransformation.None
         } else {
@@ -81,12 +92,11 @@ fun PasswordTextField(
         },
         trailingIcon = {
             IconButton(
-                // 4
                 onClick = onTogglePasswordVisibility,
             ) {
-                // 5
                 Crossfade(
-                    targetState = passwordVisible, label = "",
+                    targetState = passwordVisible,
+                    label = "password_visibility",
                 ) { visible ->
                     Icon(
                         painter = painterResource(
@@ -96,7 +106,7 @@ fun PasswordTextField(
                                 R.drawable.ic_visibility_off
                             }
                         ),
-                        contentDescription = null,
+                        contentDescription = stringResource(R.string.content_desc_toggle_password_visibility),
                     )
                 }
             }
@@ -105,4 +115,24 @@ fun PasswordTextField(
         modifier = modifier,
         colors = colors,
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PasswordTextFieldPreview() {
+    BiometricPromptSampleTheme {
+        var value by remember {
+            mutableStateOf("")
+        }
+        Surface(modifier = Modifier.width(360.dp)) {
+            PasswordTextField(
+                value = value,
+                onValueChange = { newValue -> value = newValue },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(all = MarginDouble),
+                label = { Text(text = "PIN") },
+            )
+        }
+    }
 }
