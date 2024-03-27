@@ -1,4 +1,4 @@
-package com.example.test_compose.view.screens.authentication.mvi
+package com.example.test_compose.viewmodel.authentication.mvi
 
 
 import androidx.lifecycle.ViewModel

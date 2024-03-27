@@ -1,9 +1,9 @@
-package com.example.test_compose.view.screens.authentication
+package com.example.test_compose.viewmodel.authentication
 
-import com.example.test_compose.view.screens.authentication.mvi.Event
-import com.example.test_compose.view.screens.authentication.mvi.MviIntent
-import com.example.test_compose.view.screens.authentication.mvi.ReduceAction
-import com.example.test_compose.view.screens.authentication.mvi.State
+import com.example.test_compose.viewmodel.authentication.mvi.Event
+import com.example.test_compose.viewmodel.authentication.mvi.MviIntent
+import com.example.test_compose.viewmodel.authentication.mvi.ReduceAction
+import com.example.test_compose.viewmodel.authentication.mvi.State
 
 
 data class PinState(

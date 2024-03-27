@@ -15,11 +15,10 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.FragmentActivity
-import com.example.test_compose.R
 import com.example.test_compose.view.navigation.AppNavigation
-import com.example.test_compose.view.screens.authentication.LoadState
-import com.example.test_compose.view.screens.authentication.MainState
-import com.example.test_compose.view.screens.authentication.MainViewModel
+import com.example.test_compose.viewmodel.authentication.LoadState
+import com.example.test_compose.viewmodel.authentication.MainState
+import com.example.test_compose.viewmodel.authentication.MainViewModel
 import com.example.test_compose.view.screens.authentication.PinScreen
 
 

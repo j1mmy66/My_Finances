@@ -1,9 +1,7 @@
-package com.example.test_compose.view.screens.authentication
+package com.example.test_compose.viewmodel.authentication
 
 import androidx.lifecycle.DefaultLifecycleObserver
-import com.example.test_compose.view.screens.authentication.PinCallbacks
-import com.example.test_compose.view.screens.authentication.mvi.MviViewModel
-
+import com.example.test_compose.viewmodel.authentication.mvi.MviViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

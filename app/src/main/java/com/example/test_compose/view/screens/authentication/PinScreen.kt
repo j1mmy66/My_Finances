@@ -26,8 +26,9 @@ import com.example.test_compose.ui.theme.ButtonWidth
 import com.example.test_compose.ui.theme.MarginDouble
 import com.example.test_compose.ui.theme.MarginQuad
 import com.example.test_compose.ui.theme.MaxTabletWidth
-import com.example.test_compose.view.screens.authentication.PinCallbacks
-
+import com.example.test_compose.viewmodel.authentication.PinCallbacks
+import com.example.test_compose.viewmodel.authentication.PinState
+import com.example.test_compose.viewmodel.authentication.noOpPinCallbacks
 
 
 @Composable

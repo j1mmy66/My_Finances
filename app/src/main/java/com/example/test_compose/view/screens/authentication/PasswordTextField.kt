@@ -1,6 +1,7 @@
 package com.example.test_compose.view.screens.authentication
 
 import BiometricPromptSampleTheme
+import android.app.Application
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -29,7 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.test_compose.R
 import com.example.test_compose.ui.theme.MarginDouble
-
+import dagger.hilt.android.HiltAndroidApp
 
 
 @Composable
@@ -136,3 +137,6 @@ private fun PasswordTextFieldPreview() {
         }
     }
 }
+
+@HiltAndroidApp
+class BiometricPromptApp : Application()
