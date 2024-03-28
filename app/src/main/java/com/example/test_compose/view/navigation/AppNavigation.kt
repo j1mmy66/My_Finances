@@ -35,11 +35,12 @@ import com.example.test_compose.view.screens.HypothesesScreen
 import com.example.test_compose.view.screens.NewsScreen
 import com.example.test_compose.view.screens.QuotesScreen
 import com.example.test_compose.view.screens.SettingsScreen
+import com.example.test_compose.viewmodel.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun AppNavigation() {
+fun AppNavigation(settingsViewModel: SettingsViewModel) {
     val navController = rememberNavController()
 
     Scaffold(
@@ -134,7 +135,7 @@ fun AppNavigation() {
                 HistoryScreen()
             }
             composable(route = Screens.SettingsScreen.name) {
-                SettingsScreen()
+                SettingsScreen(settingsViewModel)
             }
 
         }

@@ -15,11 +15,16 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.room.Room
+import com.example.test_compose.data.UserDatabase
 import com.example.test_compose.view.navigation.AppNavigation
 import com.example.test_compose.viewmodel.authentication.LoadState
 import com.example.test_compose.viewmodel.authentication.MainState
 import com.example.test_compose.viewmodel.authentication.MainViewModel
 import com.example.test_compose.view.screens.authentication.PinScreen
+import com.example.test_compose.viewmodel.SettingsViewModel
 
 
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,6 +40,27 @@ private val biometricsIgnoredErrors = listOf(
 class MainActivity : FragmentActivity() {
     private val viewModel: MainViewModel by viewModels()
 
+
+    private val userDatabase by lazy {
+        Room.databaseBuilder(
+            applicationContext,
+            UserDatabase::class.java,
+            "user.db"
+        ).build()
+    }
+
+
+    private val settingsViewModel by viewModels<SettingsViewModel> (
+        factoryProducer = {
+            object : ViewModelProvider.Factory {
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return SettingsViewModel(userDatabase.dao) as T
+                }
+            }
+        }
+    )
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycle.addObserver(viewModel)
@@ -48,7 +74,7 @@ class MainActivity : FragmentActivity() {
                         }
                     }
                     Crossfade(
-                        targetState = state.value.loadState
+                        targetState = state.value.loadState, label = ""
                     ) { loadState ->
                         when (loadState) {
                             LoadState.SHOW_PIN -> {
@@ -57,7 +83,8 @@ class MainActivity : FragmentActivity() {
                                     viewModel
                                 )
                             }
-                            LoadState.SHOW_CONTENT -> AppNavigation()
+
+                            LoadState.SHOW_CONTENT -> AppNavigation(settingsViewModel)
                         }
                     }
                 }
