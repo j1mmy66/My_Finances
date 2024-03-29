@@ -3,6 +3,7 @@ package com.example.test_compose.view.navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -56,5 +57,13 @@ fun settingsItem() : NavItem {
         label = "settings",
         icon = ImageVector.vectorResource(R.drawable.settings_icon),
         route = Screens.SettingsScreen.name
+    )
+}
+
+fun AddSharesItem() : NavItem{
+    return NavItem(
+        label = "addShares",
+        icon = Icons.Default.Share,
+        route = Screens.AddSharesScreen.name
     )
 }

@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.example.test_compose.data.models.MyShare
 
 
-@Database(entities = [MyShare::class], version = 1)
+@Database(entities = [MyShare::class], version =2)
 abstract class MyShareDatabase : RoomDatabase(){
     abstract val dao: MyShareDao
 }

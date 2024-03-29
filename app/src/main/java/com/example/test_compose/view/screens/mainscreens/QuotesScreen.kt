@@ -1,4 +1,4 @@
-package com.example.test_compose.view.screens
+package com.example.test_compose.view.screens.mainscreens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +16,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,24 +25,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.test_compose.viewmodel.GetSharesService
 import com.example.test_compose.viewmodel.model.Share
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @Composable
-fun QuotesScreen(getSharesService: GetSharesService = GetSharesService()) {
+fun QuotesScreen(getSharesService: GetSharesService) {
 
     val items = getSharesService.items.observeAsState(initial = emptyList())
 
-    fun getData() {
-        CoroutineScope(Dispatchers.IO).launch {
-            getSharesService.getShares()
-        }
-    }
 
-    LaunchedEffect(true) {
-        getData()
-    }
 
     LazyColumn {
         items(items.value) { item ->

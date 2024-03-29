@@ -18,12 +18,18 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
+import com.example.test_compose.data.HistoryShareDatabase
+import com.example.test_compose.data.MyShareDatabase
 import com.example.test_compose.data.UserDatabase
 import com.example.test_compose.view.navigation.AppNavigation
 import com.example.test_compose.viewmodel.authentication.LoadState
 import com.example.test_compose.viewmodel.authentication.MainState
 import com.example.test_compose.viewmodel.authentication.MainViewModel
 import com.example.test_compose.view.screens.authentication.PinScreen
+import com.example.test_compose.viewmodel.GetExchanchgeRateViewModel
+import com.example.test_compose.viewmodel.GetSharesService
+import com.example.test_compose.viewmodel.HistoryShareViewModel
+import com.example.test_compose.viewmodel.MyShareViewModel
 import com.example.test_compose.viewmodel.SettingsViewModel
 
 
@@ -49,6 +55,24 @@ class MainActivity : FragmentActivity() {
         ).build()
     }
 
+    private val historyShareDatabase by lazy {
+        Room.databaseBuilder(
+            applicationContext,
+            HistoryShareDatabase::class.java,
+            "history_share"
+        ).build()
+    }
+
+    private val historyShareViewModel by viewModels<HistoryShareViewModel> (
+        factoryProducer = {
+            object : ViewModelProvider.Factory {
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return HistoryShareViewModel(historyShareDatabase.dao) as T
+                }
+            }
+        }
+    )
+
 
     private val settingsViewModel by viewModels<SettingsViewModel> (
         factoryProducer = {
@@ -59,6 +83,28 @@ class MainActivity : FragmentActivity() {
             }
         }
     )
+
+    private val myShareDatabase by lazy {
+        Room.databaseBuilder(
+            applicationContext,
+            MyShareDatabase::class.java,
+            "my_share.db"
+        ).fallbackToDestructiveMigration().build()
+    }
+
+    private val myShareViewModel by viewModels<MyShareViewModel>(
+        factoryProducer = {
+            object : ViewModelProvider.Factory {
+                override fun <T : ViewModel> create(modelClass: Class<T>) : T {
+                    return MyShareViewModel(myShareDatabase.dao, getSharesService) as T
+                }
+            }
+        }
+    )
+
+    private val getSharesService = GetSharesService()
+
+    private val getExchanchgeRateViewModel = GetExchanchgeRateViewModel()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,7 +130,12 @@ class MainActivity : FragmentActivity() {
                                 )
                             }
 
-                            LoadState.SHOW_CONTENT -> AppNavigation(settingsViewModel)
+                            LoadState.SHOW_CONTENT -> AppNavigation(settingsViewModel,
+                                myShareViewModel,
+                                getSharesService,
+                                applicationContext,
+                                getExchanchgeRateViewModel,
+                                historyShareViewModel)
                         }
                     }
                 }

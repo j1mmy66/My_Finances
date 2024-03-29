@@ -1,4 +1,4 @@
-package com.example.test_compose.view.screens
+package com.example.test_compose.view.screens.mainscreens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,14 +9,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun HistoryScreen() {
+fun HypothesesScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "History Screen",
+            text = "Hypotheses Screen",
             fontSize = 22.sp
         )
     }

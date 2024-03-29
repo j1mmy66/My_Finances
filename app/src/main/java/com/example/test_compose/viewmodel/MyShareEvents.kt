@@ -6,4 +6,7 @@ sealed interface MyShareEvents {
     data class  BuyShares(val myShare: MyShare) : MyShareEvents
 
 
+    data class DeleteShare(val myShare: MyShare) : MyShareEvents
+
+
 }

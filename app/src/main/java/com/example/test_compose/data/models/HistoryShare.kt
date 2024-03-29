@@ -5,9 +5,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "history_share")
 data class HistoryShare(
-    @PrimaryKey
+
     val secid : String,
-    val shortname : String,
     val count : Int,
-    val curPricePerOne : Int
+    val curPricePerOne : Double,
+    @PrimaryKey(autoGenerate = true)
+    val id : Int = 0
 )

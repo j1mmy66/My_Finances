@@ -6,7 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import com.example.test_compose.data.models.MyShare
 
 data class MyShareState(
-    val myShares : List<MyShare> = emptyList(),
-    val secid: MutableState<String> = mutableStateOf(""),
-    val number : MutableState<Int> = mutableIntStateOf(0)
+    var myShares : List<MyShare> = emptyList(),
+    var secid: MutableState<String> = mutableStateOf(""),
+    var number : MutableState<Int> = mutableStateOf(0),
+    val moneySpend: MutableState<Double> = mutableStateOf(0.0),
+    val curPricePerOne: MutableState<Double> = mutableStateOf(0.0)
 )

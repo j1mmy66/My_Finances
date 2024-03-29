@@ -6,5 +6,6 @@ enum class Screens {
     QuotesScreen,
     HypothesesScreen,
     HistoryScreen,
-    SettingsScreen
+    SettingsScreen,
+    AddSharesScreen
 }
