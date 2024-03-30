@@ -46,7 +46,7 @@ fun PinScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = stringResource(id = R.string.app_name),
+                text = "My Finances",
                 modifier = Modifier.padding(horizontal = MarginQuad),
                 style = MaterialTheme.typography.h4,
                 textAlign = TextAlign.Center,

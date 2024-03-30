@@ -1,6 +1,7 @@
 package com.example.test_compose.view.screens.mainscreens.homescreen
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.runtime.collectAsState
@@ -69,7 +70,8 @@ fun HomeScreen(
     settingsViewModel : SettingsViewModel,
     myShareViewModel: MyShareViewModel,
     getExchanchgeRateViewModel: GetExchanchgeRateViewModel,
-    historyShareViewModel: HistoryShareViewModel
+    historyShareViewModel: HistoryShareViewModel,
+    applicationContext: Context
 ) {
 
 
@@ -186,8 +188,12 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(state.myShares.size) { index ->
-                    ShareItem(state = state, index = index,getSharesService, onEvent = onEvent, historyShareViewModel = historyShareViewModel)
-
+                    ShareItem(state = state,
+                        index = index,getSharesService,
+                        onEvent = onEvent,
+                        historyShareViewModel = historyShareViewModel,
+                        applicationContext = applicationContext,
+                        myShareViewModel = myShareViewModel)
                 }
 
             }

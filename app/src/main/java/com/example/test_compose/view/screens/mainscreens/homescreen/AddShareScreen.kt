@@ -79,8 +79,8 @@ fun AddShareScreen(
                 label = { Text("secid") },
                 textStyle = TextStyle( color = Color.Black),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Color.Black, // Цвет рамки при фокусе
-                    unfocusedBorderColor = Color.Black // Цвет рамки при потере фокуса
+                    focusedBorderColor = Color.Black,
+                    unfocusedBorderColor = Color.Black
                 )
             )
             OutlinedTextField(
@@ -90,9 +90,14 @@ fun AddShareScreen(
                 value = state.number.value.toString(),
                 onValueChange = {
                     try {
+                        if (it.toInt() <= 0) {
+                            throw NumberFormatException()
+                        }
                         state.number.value = it.toInt()
+
+
                     } catch (e: NumberFormatException) {
-                        // Обработка исключения - вывод сообщения об ошибке
+
                         Toast.makeText(applicationContext, "Please enter a valid number", Toast.LENGTH_SHORT).show()
                     }},
 

@@ -140,7 +140,8 @@ fun AppNavigation(
                     settingsViewModel = settingsViewModel,
                     myShareViewModel = myShareViewModel,
                     getExchanchgeRateViewModel = getExchanchgeRateViewModel,
-                    historyShareViewModel = historyShareViewModel
+                    historyShareViewModel = historyShareViewModel,
+                    applicationContext = applicationContext
                 )
             }
             composable(route = Screens.NewsScreen.name) {
