@@ -22,28 +22,28 @@ data class NavItem(
 fun listOfNavItems() : List<NavItem> {
     return listOf(
         NavItem(
-            label = "home",
+            label = "Home",
             icon = Icons.Default.Home,
             route = Screens.HomeScreen.name
         ),
 
         NavItem(
-            label = "news",
+            label = "News",
             icon = ImageVector.vectorResource(R.drawable.news_icon),
             route = Screens.NewsScreen.name
         ),
         NavItem(
-            label = "quotes",
+            label = "Quotes",
             icon = ImageVector.vectorResource(R.drawable.quotes_icon),
             route = Screens.QuotesScreen.name
         ),
         NavItem(
-            label = "hypothesis",
+            label = "Theory",
             icon = ImageVector.vectorResource(R.drawable.hypothesis),
             route = Screens.HypothesesScreen.name,
         ),
         NavItem(
-            label = "history",
+            label = "History",
             icon = ImageVector.vectorResource(R.drawable.history_icon),
             route = Screens.HistoryScreen.name
         )
@@ -54,7 +54,7 @@ fun listOfNavItems() : List<NavItem> {
 @Composable
 fun settingsItem() : NavItem {
     return NavItem(
-        label = "settings",
+        label = "Settings",
         icon = ImageVector.vectorResource(R.drawable.settings_icon),
         route = Screens.SettingsScreen.name
     )
@@ -62,7 +62,7 @@ fun settingsItem() : NavItem {
 
 fun AddSharesItem() : NavItem{
     return NavItem(
-        label = "addShares",
+        label = "Buy shares",
         icon = Icons.Default.Share,
         route = Screens.AddSharesScreen.name
     )

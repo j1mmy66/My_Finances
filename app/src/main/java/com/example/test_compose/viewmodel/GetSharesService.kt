@@ -1,6 +1,7 @@
 package com.example.test_compose.viewmodel
 
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -34,6 +35,7 @@ class GetSharesService : ViewModel(){
 
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
+                Log.i("www", "fetchSecidToShortNameMap: ")
                 throw IOException("Unexpected code $response")
             }
 
@@ -60,6 +62,7 @@ class GetSharesService : ViewModel(){
 
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
+                Log.i("www", "fetchSecidToShortNameMap: ")
                 throw IOException("Unexpected code $response")
             }
 

@@ -21,8 +21,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.test_compose.data.models.HistoryShare
 import com.example.test_compose.data.models.MyShare
 import com.example.test_compose.viewmodel.GetSharesService
+import com.example.test_compose.viewmodel.HistoryShareViewModel
 import com.example.test_compose.viewmodel.MyShareEvents
 import com.example.test_compose.viewmodel.MyShareState
 
@@ -32,10 +34,12 @@ fun AddShareScreen(
     navController: NavController,
     onEvent: (MyShareEvents) -> Unit,
     getSharesService: GetSharesService,
-    applicationContext: Context
+    applicationContext: Context,
+    historyShareViewModel: HistoryShareViewModel
 ) {
     val items = getSharesService.items.observeAsState(initial = emptyList())
     Scaffold(
+        containerColor = Color(0xFFF0E8FF),
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
             ExtendedFloatingActionButton(onClick = {
@@ -55,9 +59,17 @@ fun AddShareScreen(
                             )
                         )
                     )
+                    historyShareViewModel.addShare(
+                        HistoryShare(
+                            state.secid.value,
+                            state.number.value,
+                            price
+                        )
+                    )
                 }
                 navController.popBackStack()
-            }) {
+            },
+                containerColor = Color(0xFFB0E0E6)) {
                 Icon(imageVector = Icons.Rounded.Check, contentDescription = "")
 
             }

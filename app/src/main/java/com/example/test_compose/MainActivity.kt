@@ -1,10 +1,12 @@
 package com.example.test_compose
 
 import BiometricPromptSampleTheme
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.biometric.BiometricPrompt
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
@@ -27,6 +29,8 @@ import com.example.test_compose.viewmodel.authentication.MainState
 import com.example.test_compose.viewmodel.authentication.MainViewModel
 import com.example.test_compose.view.screens.authentication.PinScreen
 import com.example.test_compose.viewmodel.GetExchanchgeRateViewModel
+import com.example.test_compose.viewmodel.GetNewsViewModel
+import com.example.test_compose.viewmodel.GetShareQuotesService
 import com.example.test_compose.viewmodel.GetSharesService
 import com.example.test_compose.viewmodel.HistoryShareViewModel
 import com.example.test_compose.viewmodel.MyShareViewModel
@@ -60,7 +64,7 @@ class MainActivity : FragmentActivity() {
             applicationContext,
             HistoryShareDatabase::class.java,
             "history_share"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     private val historyShareViewModel by viewModels<HistoryShareViewModel> (
@@ -106,7 +110,12 @@ class MainActivity : FragmentActivity() {
 
     private val getExchanchgeRateViewModel = GetExchanchgeRateViewModel()
 
+    private val getShareQuotesService = GetShareQuotesService()
 
+    private val getNewsViewModel = GetNewsViewModel()
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycle.addObserver(viewModel)
@@ -135,7 +144,9 @@ class MainActivity : FragmentActivity() {
                                 getSharesService,
                                 applicationContext,
                                 getExchanchgeRateViewModel,
-                                historyShareViewModel)
+                                historyShareViewModel,
+                                getShareQuotesService,
+                                getNewsViewModel)
                         }
                     }
                 }

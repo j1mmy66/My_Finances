@@ -1,6 +1,8 @@
 package com.example.test_compose.view.navigation
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 
@@ -14,11 +16,15 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -33,11 +39,14 @@ import com.example.test_compose.view.screens.mainscreens.NewsScreen
 import com.example.test_compose.view.screens.mainscreens.QuotesScreen
 import com.example.test_compose.view.screens.SettingsScreen
 import com.example.test_compose.viewmodel.GetExchanchgeRateViewModel
+import com.example.test_compose.viewmodel.GetNewsViewModel
+import com.example.test_compose.viewmodel.GetShareQuotesService
 import com.example.test_compose.viewmodel.GetSharesService
 import com.example.test_compose.viewmodel.HistoryShareViewModel
 import com.example.test_compose.viewmodel.MyShareViewModel
 import com.example.test_compose.viewmodel.SettingsViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavigation(
@@ -46,12 +55,15 @@ fun AppNavigation(
     getSharesService: GetSharesService,
     applicationContext: Context,
     getExchanchgeRateViewModel: GetExchanchgeRateViewModel,
-    historyShareViewModel: HistoryShareViewModel
+    historyShareViewModel: HistoryShareViewModel,
+    getShareQuotesService: GetShareQuotesService,
+    getNewsViewModel: GetNewsViewModel
 ) {
     val navController = rememberNavController()
     val state by myShareViewModel.state.collectAsState()
 
     Scaffold(
+        containerColor = Color(0xFFF0E8FF),
         topBar = {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination?.route
@@ -68,14 +80,59 @@ fun AppNavigation(
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxWidth()
-                ){
+                ) {
                     val item = settingsItem()
-                    Text(currentScreen?.label ?: "Unknown")
+                    Text(currentScreen?.label ?: "Unknown",fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .padding(top = 3.dp))
                     Icon(
                         imageVector = item.icon,
                         contentDescription = null,
-                        modifier = Modifier.clickable {
-                            navController.navigate(item.route) {
+                        modifier = Modifier
+                            .clickable {
+                                navController.navigate(item.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
+                            .padding(8.dp)
+
+                    )
+
+
+                }
+
+            },
+                colors = TopAppBarColors(
+                    scrolledContainerColor = Color(0xFFE6E6FA),
+                    containerColor = Color(0xFFE6E6FA),
+                    navigationIconContentColor = Color.Black,
+                    titleContentColor = Color.Black,
+                    actionIconContentColor = Color.Black
+                )
+
+            )
+        },
+
+        bottomBar = {
+            NavigationBar(
+
+
+            ) {
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currntDestination = navBackStackEntry?.destination
+
+                listOfNavItems().forEach { navItem ->
+                    NavigationBarItem(
+
+                        selected = currntDestination?.hierarchy?.any { it.route == navItem.route } == true,
+                        onClick = {
+                            navController.navigate(navItem.route) {
                                 popUpTo(navController.graph.findStartDestination().id) {
                                     saveState = true
                                 }
@@ -83,50 +140,25 @@ fun AppNavigation(
                                 launchSingleTop = true
                                 restoreState = true
                             }
-                        }.padding(8.dp)
-
-                    )
-
-
-                }
-
-            })
-        },
-
-        bottomBar = {
-            NavigationBar {
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currntDestination = navBackStackEntry?.destination
-
-                listOfNavItems().forEach { navItem ->
-                    NavigationBarItem(
-                        selected = currntDestination?.hierarchy?.any { it.route == navItem.route} == true,
-                        onClick = {
-                                  navController.navigate(navItem.route) {
-                                      popUpTo(navController.graph.findStartDestination().id) {
-                                          saveState = true
-                                      }
-
-                                      launchSingleTop = true
-                                      restoreState = true
-                                  }
                         },
                         icon = {
-                               Icon(
-                                   imageVector = navItem.icon,
-                                   contentDescription = null,
+                            Icon(
+                                imageVector = navItem.icon,
+                                contentDescription = null,
 
-                               )
+                                )
                         },
                         label = {
                             Text(text = navItem.label)
-                        })
+                        }
+                    )
 
                 }
             }
         }
-    ) {paddingValues ->
-        NavHost(navController = navController,
+    ) { paddingValues ->
+        NavHost(
+            navController = navController,
             startDestination = Screens.HomeScreen.name,
             modifier = Modifier
                 .padding(paddingValues)
@@ -141,17 +173,18 @@ fun AppNavigation(
                     myShareViewModel = myShareViewModel,
                     getExchanchgeRateViewModel = getExchanchgeRateViewModel,
                     historyShareViewModel = historyShareViewModel,
-                    applicationContext = applicationContext
+                    applicationContext = applicationContext,
+                    getNewsViewModel = getNewsViewModel
                 )
             }
             composable(route = Screens.NewsScreen.name) {
-                NewsScreen()
+                NewsScreen(getNewsViewModel)
             }
             composable(route = Screens.QuotesScreen.name) {
                 QuotesScreen(getSharesService)
             }
             composable(route = Screens.HypothesesScreen.name) {
-                HypothesesScreen()
+                HypothesesScreen(getShareQuotesService)
             }
             composable(route = Screens.HistoryScreen.name) {
                 HistoryScreen(historyShareViewModel, getSharesService)
@@ -165,14 +198,13 @@ fun AppNavigation(
                     navController = navController,
                     onEvent = myShareViewModel::onEvent,
                     getSharesService = getSharesService,
-                    applicationContext = applicationContext
+                    applicationContext = applicationContext,
+                    historyShareViewModel = historyShareViewModel
                 )
             }
 
 
         }
-
-
 
 
     }

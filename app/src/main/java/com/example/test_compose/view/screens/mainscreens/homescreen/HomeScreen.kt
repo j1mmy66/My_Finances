@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -56,6 +57,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.example.test_compose.viewmodel.GetNewsViewModel
 import com.example.test_compose.viewmodel.HistoryShareViewModel
 import kotlinx.coroutines.flow.StateFlow
 
@@ -67,28 +69,38 @@ fun HomeScreen(
     navController: NavController,
     onEvent: (MyShareEvents) -> Unit,
     getSharesService: GetSharesService,
-    settingsViewModel : SettingsViewModel,
+    settingsViewModel: SettingsViewModel,
     myShareViewModel: MyShareViewModel,
     getExchanchgeRateViewModel: GetExchanchgeRateViewModel,
     historyShareViewModel: HistoryShareViewModel,
-    applicationContext: Context
+    applicationContext: Context,
+    getNewsViewModel: GetNewsViewModel
 ) {
 
 
     fun getData() {
+
         CoroutineScope(Dispatchers.IO).launch {
             getSharesService.getShares()
+        }
+
+    }
+
+    fun getNews() {
+        CoroutineScope(Dispatchers.IO).launch {
+            getNewsViewModel.getNews()
         }
     }
 
     fun getRates() {
+
         CoroutineScope(Dispatchers.IO).launch {
             getExchanchgeRateViewModel.getExchangeRate()
+
         }
     }
+
     val items = getSharesService.items.observeAsState(initial = emptyList())
-
-
 
 
     val sumValue = remember { mutableStateOf(0.0) }
@@ -96,7 +108,9 @@ fun HomeScreen(
         val shares = myShareViewModel.myShares.value
         var sum = 0.0
         for (share in shares) {
-            sum += (getSharesService.items.value?.find { it.secid == share.secid }?.lastPrice?.times(share.count))
+            sum += (getSharesService.items.value?.find { it.secid == share.secid }?.lastPrice?.times(
+                share.count
+            ))
                 ?: 0.0
         }
         sumValue.value = sum
@@ -116,8 +130,13 @@ fun HomeScreen(
         getRates()
     }
 
+    LaunchedEffect(true) {
+        getNews()
+    }
+
 
     Scaffold(
+        containerColor = Color(0xFFF0E8FF),
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = {
@@ -127,7 +146,8 @@ fun HomeScreen(
                 },
                 content = {
                     Icon(imageVector = Icons.Rounded.Add, contentDescription = "")
-                }
+                },
+                containerColor = Color(0xFFB0E0E6)
             )
         }
 
@@ -138,7 +158,14 @@ fun HomeScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(12.dp)
+                    .padding(12.dp),
+                colors = CardColors(
+                    containerColor = Color(0xFFFFDAB9),
+                    contentColor = Color.Black,
+                    disabledContainerColor = Color.Black,
+                    disabledContentColor = Color.Black
+                )
+
 
             ) {
                 settingsViewModel.getUser()
@@ -146,12 +173,16 @@ fun HomeScreen(
                     modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp)
                 ) {
 
-                    Text(text = "${settingsViewModel.user.firstName}  ${settingsViewModel.user.lastName}",
-                            style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp))
+                    Text(
+                        text = "${settingsViewModel.user.firstName}  ${settingsViewModel.user.lastName}",
+                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp)
+                    )
                     Spacer(modifier = Modifier.padding(8.dp))
 
-                    Text(text = "Total sum: ${"%.1f".format(sumValue.value)}",
-                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp))
+                    Text(
+                        text = "Total sum: ${"%.1f".format(sumValue.value)}₽",
+                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp)
+                    )
                 }
 
 
@@ -160,24 +191,43 @@ fun HomeScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 12.dp)
+                    .padding(horizontal = 12.dp, vertical = 12.dp),
+                colors = CardColors(
+                    containerColor = Color(0xFFFFDAB9),
+                    contentColor = Color.Black,
+                    disabledContainerColor = Color.Black,
+                    disabledContentColor = Color.Black
+                )
 
             ) {
                 Spacer(modifier = Modifier.padding(4.dp))
-                Text(text = "ExchangeRate",
-                    modifier = Modifier.padding(horizontal = 8.dp))
+                Text(
+                    text = "ExchangeRate",
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                )
                 Spacer(modifier = Modifier.padding(8.dp))
                 Row(
-                    modifier = Modifier.fillMaxWidth()
-                           .padding(vertical = 8.dp, horizontal = 8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp, horizontal = 8.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    Text(text = "$${"%.1f".format(getExchanchgeRateViewModel.items.value?.get(0) ?: 0.0)}")
-                    Text(text = "€${"%.1f".format(getExchanchgeRateViewModel.items.value?.get(1) ?: 0.0)}")
-                    Text(text = "¥${"%.1f".format(getExchanchgeRateViewModel.items.value?.get(2) ?: 0.0)}")
+                    Text(
+                        text = "$${"%.1f".format(getExchanchgeRateViewModel.items.value?.get(0) ?: 0.0)}",
+                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    )
+                    Text(
+                        text = "€${"%.1f".format(getExchanchgeRateViewModel.items.value?.get(1) ?: 0.0)}",
+                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    )
+                    Text(
+                        text = "¥${"%.1f".format(getExchanchgeRateViewModel.items.value?.get(2) ?: 0.0)}",
+                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    )
                 }
                 Spacer(modifier = Modifier.padding(4.dp))
-                
+
             }
 
             LazyColumn(
@@ -188,12 +238,14 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(state.myShares.size) { index ->
-                    ShareItem(state = state,
-                        index = index,getSharesService,
+                    ShareItem(
+                        state = state,
+                        index = index, getSharesService,
                         onEvent = onEvent,
                         historyShareViewModel = historyShareViewModel,
                         applicationContext = applicationContext,
-                        myShareViewModel = myShareViewModel)
+                        myShareViewModel = myShareViewModel
+                    )
                 }
 
             }

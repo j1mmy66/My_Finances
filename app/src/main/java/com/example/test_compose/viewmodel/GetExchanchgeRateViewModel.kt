@@ -1,5 +1,6 @@
 package com.example.test_compose.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.test_compose.viewmodel.model.Share
@@ -26,6 +27,7 @@ class GetExchanchgeRateViewModel {
 
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
+                Log.i("www", "fetchSecidToShortNameMap: ")
                 throw IOException("Unexpected code $response")
             }
             val jsonResponse = response.body?.string()

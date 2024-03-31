@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
@@ -40,7 +41,7 @@ fun HistoryScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(8.dp),
+            .padding(8.dp).background(Color(0xFFF0E8FF)),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(shares) { share ->
@@ -57,7 +58,7 @@ fun HistoryShareItem(share: HistoryShare) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(10.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            .background(Color(0xFFFFDAB9))
             .padding(12.dp)
     ) {
         Column(
@@ -82,9 +83,15 @@ fun HistoryShareItem(share: HistoryShare) {
 
         ) {
 
+            val color = if (share.curPricePerOne > 0) {
+                Color.Green
+            }
+            else {
+                Color.Black
+            }
             Text(
                 text = "%.1f ₽".format(share.count * share.curPricePerOne),
-                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Medium)
+                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Medium, color = color)
             )
 
 

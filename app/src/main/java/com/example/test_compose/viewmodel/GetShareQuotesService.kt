@@ -1,6 +1,7 @@
 package com.example.test_compose.viewmodel
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import okhttp3.OkHttpClient
@@ -27,6 +28,7 @@ class GetShareQuotesService : ViewModel(){
 
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
+                    Log.i("www", "fetchSecidToShortNameMap: ")
                     throw IOException("Unexpected code $response")
                 }
                 val jsonResponse = response.body?.string()
