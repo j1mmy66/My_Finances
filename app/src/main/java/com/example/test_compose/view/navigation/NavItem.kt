@@ -1,16 +1,13 @@
 package com.example.test_compose.view.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import com.example.test_compose.R
-import androidx.compose.ui.res.vectorResource
 
 
 data class NavItem(
@@ -60,10 +57,18 @@ fun settingsItem() : NavItem {
     )
 }
 
-fun AddSharesItem() : NavItem{
+fun addSharesItem() : NavItem{
     return NavItem(
         label = "Buy shares",
         icon = Icons.Default.Share,
         route = Screens.AddSharesScreen.name
+    )
+}
+
+fun readNewItem() : NavItem{
+    return NavItem(
+        label = "Read new",
+        icon = Icons.Default.Check,
+        route = Screens.ReadNewScreen.name
     )
 }

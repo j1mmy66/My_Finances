@@ -2,9 +2,7 @@ package com.example.test_compose.view.screens.mainscreens.homescreen
 
 import android.annotation.SuppressLint
 import android.content.Context
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.runtime.collectAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,39 +10,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.test_compose.data.models.MyShare
 import com.example.test_compose.viewmodel.GetExchanchgeRateViewModel
+import com.example.test_compose.viewmodel.GetNewsViewModel
 import com.example.test_compose.viewmodel.GetSharesService
+import com.example.test_compose.viewmodel.HistoryShareViewModel
 import com.example.test_compose.viewmodel.MyShareEvents
 import com.example.test_compose.viewmodel.MyShareState
 import com.example.test_compose.viewmodel.MyShareViewModel
@@ -52,14 +39,6 @@ import com.example.test_compose.viewmodel.SettingsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import com.example.test_compose.viewmodel.GetNewsViewModel
-import com.example.test_compose.viewmodel.HistoryShareViewModel
-import kotlinx.coroutines.flow.StateFlow
 
 
 @SuppressLint("UnrememberedMutableState")
@@ -100,26 +79,23 @@ fun HomeScreen(
         }
     }
 
-    val items = getSharesService.items.observeAsState(initial = emptyList())
 
 
-    val sumValue = remember { mutableStateOf(0.0) }
-    LaunchedEffect(myShareViewModel.myShares) {
-        val shares = myShareViewModel.myShares.value
-        var sum = 0.0
-        for (share in shares) {
-            sum += (getSharesService.items.value?.find { it.secid == share.secid }?.lastPrice?.times(
-                share.count
-            ))
-                ?: 0.0
+
+
+    LaunchedEffect(true) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val shares = myShareViewModel.myShares.value
+            var sum = 0.0
+            for (share in shares) {
+                sum += (getSharesService.items.value?.find { it.secid == share.secid }?.lastPrice?.times(
+                    share.count
+                ))
+                    ?: 0.0
+            }
+            myShareViewModel.sumValue.value = sum
         }
-        sumValue.value = sum
     }
-
-
-
-
-
 
     LaunchedEffect(true) {
         getData()
@@ -180,7 +156,7 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.padding(8.dp))
 
                     Text(
-                        text = "Total sum: ${"%.1f".format(sumValue.value)}₽",
+                        text = "Total sum: ${"%.1f".format(myShareViewModel.sumValue.value)}₽",
                         style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp)
                     )
                 }

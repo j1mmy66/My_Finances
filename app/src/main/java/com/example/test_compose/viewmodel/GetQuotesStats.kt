@@ -3,7 +3,7 @@ package com.example.test_compose.viewmodel
 import kotlin.math.sqrt
 
 class GetQuotesStats(
-    val quotes : List<Double>
+    private val quotes : List<Double>
 ) {
     fun getAverage() : Double{
         return quotes.average()

@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.test_compose.data.models.HistoryShare
-import com.example.test_compose.data.models.MyShare
 import kotlinx.coroutines.flow.Flow
 
 @Dao

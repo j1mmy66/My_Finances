@@ -1,7 +1,6 @@
 package com.example.test_compose.viewmodel
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import com.example.test_compose.data.models.MyShare
 

@@ -5,7 +5,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -31,13 +30,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.test_compose.view.screens.mainscreens.homescreen.AddShareScreen
-import com.example.test_compose.view.screens.mainscreens.HistoryScreen
-import com.example.test_compose.view.screens.mainscreens.homescreen.HomeScreen
-import com.example.test_compose.view.screens.mainscreens.HypothesesScreen
-import com.example.test_compose.view.screens.mainscreens.NewsScreen
-import com.example.test_compose.view.screens.mainscreens.QuotesScreen
 import com.example.test_compose.view.screens.SettingsScreen
+import com.example.test_compose.view.screens.mainscreens.history.HistoryScreen
+import com.example.test_compose.view.screens.mainscreens.hypotheses.HypothesesScreen
+import com.example.test_compose.view.screens.mainscreens.news.NewsScreen
+import com.example.test_compose.view.screens.mainscreens.quotes.QuotesScreen
+import com.example.test_compose.view.screens.mainscreens.news.ReadNewScreen
+import com.example.test_compose.view.screens.mainscreens.homescreen.AddShareScreen
+import com.example.test_compose.view.screens.mainscreens.homescreen.HomeScreen
 import com.example.test_compose.viewmodel.GetExchanchgeRateViewModel
 import com.example.test_compose.viewmodel.GetNewsViewModel
 import com.example.test_compose.viewmodel.GetShareQuotesService
@@ -70,10 +70,13 @@ fun AppNavigation(
 
             var currentScreen = listOfNavItems().find { it.route == currentDestination }
             if (currentDestination == "AddShareScreen") {
-                currentScreen = AddSharesItem()
+                currentScreen = addSharesItem()
             }
             if (currentDestination == "SettingsScreen") {
                 currentScreen = settingsItem()
+            }
+            if(currentDestination == "ReadNewScreen") {
+                currentScreen =  readNewItem()
             }
 
             TopAppBar(title = {
@@ -121,8 +124,6 @@ fun AppNavigation(
 
         bottomBar = {
             NavigationBar(
-
-
             ) {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currntDestination = navBackStackEntry?.destination
@@ -178,7 +179,7 @@ fun AppNavigation(
                 )
             }
             composable(route = Screens.NewsScreen.name) {
-                NewsScreen(getNewsViewModel)
+                NewsScreen(getNewsViewModel, navController)
             }
             composable(route = Screens.QuotesScreen.name) {
                 QuotesScreen(getSharesService)
@@ -201,6 +202,9 @@ fun AppNavigation(
                     applicationContext = applicationContext,
                     historyShareViewModel = historyShareViewModel
                 )
+            }
+            composable("ReadNewScreen") {
+                ReadNewScreen(getNewsViewModel= getNewsViewModel)
             }
 
 

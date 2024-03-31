@@ -8,17 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -43,7 +34,6 @@ import com.example.test_compose.viewmodel.HistoryShareViewModel
 import com.example.test_compose.viewmodel.MyShareEvents
 import com.example.test_compose.viewmodel.MyShareState
 import com.example.test_compose.viewmodel.MyShareViewModel
-import com.example.test_compose.viewmodel.model.Share
 
 @Composable
 fun ShareItem(
@@ -68,7 +58,7 @@ fun ShareItem(
         Column(
             modifier = Modifier.weight(1f)
         ) {
-            Text(text = "${state.myShares[index].secid}",
+            Text(text = state.myShares[index].secid,
                 style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Medium))
             Text(text = "${state.myShares[index].count} shares",
                 style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium))
@@ -88,21 +78,6 @@ fun ShareItem(
 
         }
 
-
-        /*
-        IconButton(onClick = {
-            historyShareViewModel.addShare(HistoryShare(state.myShares[index].secid,
-                state.myShares[index].count,
-                items.value.find { it.secid == state.myShares[index].secid }?.lastPrice ?: 0.0))
-            onEvent(MyShareEvents.DeleteShare(state.myShares[index]))
-
-        }) {
-            Icon(
-                imageVector = Icons.Rounded.Delete,
-                contentDescription = "")
-        }
-
-         */
         IconButton(onClick = { dialogOpen = true }) {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_sell),
@@ -163,61 +138,3 @@ fun ShareItem(
 
 }
 
-@Composable
-fun SellStockDialog(
-    onConfirm: (Int) -> Unit,
-    onDismiss: () -> Unit
-) {
-    var quantity by remember { mutableStateOf(0) }
-
-    AlertDialog(
-        backgroundColor = Color(0xFFF0E8FF),
-        onDismissRequest = { onDismiss() },
-        title = { Text("Введите количество акций для продажи") },
-        text = {
-            OutlinedTextField(
-                value = quantity.toString(),
-                onValueChange = { newValue ->
-                    quantity = newValue.toIntOrNull()?.takeIf { it > 0 } ?: 0
-                },
-                label = { Text("Количество акций") },
-                modifier = Modifier.fillMaxWidth(),
-                textStyle = TextStyle( color = Color.Black),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Color.Black,
-                    unfocusedBorderColor = Color.Black
-                )
-
-            )
-        },
-        confirmButton = {
-            Button(
-                onClick = {
-                    onConfirm(quantity)
-                    onDismiss()
-                },
-                colors = ButtonColors(
-                    containerColor = Color(0xFFB0E0E6),
-                    contentColor = Color.White,
-                    disabledContainerColor = Color(0xFFB0E0E6),
-                    disabledContentColor = Color.White
-                )
-            ) {
-                Text("Продать")
-            }
-        },
-        dismissButton = {
-            Button(
-                onClick = { onDismiss() },
-                colors = ButtonColors(
-                    containerColor = Color(0xFFB0E0E6),
-                    contentColor = Color.White,
-                    disabledContainerColor = Color(0xFFB0E0E6),
-                    disabledContentColor = Color.White
-                )
-            ) {
-                Text("Отмена")
-            }
-        }
-    )
-}

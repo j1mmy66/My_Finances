@@ -1,10 +1,10 @@
 package com.example.test_compose.viewmodel
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.test_compose.viewmodel.model.News
-import com.example.test_compose.viewmodel.model.Share
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,6 +18,10 @@ import java.io.IOException
 import javax.xml.parsers.DocumentBuilderFactory
 
 class GetNewsViewModel : ViewModel(){
+
+    val state = mutableStateOf("")
+
+    val new_state = mutableStateOf("")
 
     private val _items = MutableLiveData<List<News>>()
     val items: LiveData<List<News>> get() = _items
@@ -53,7 +57,7 @@ class GetNewsViewModel : ViewModel(){
         }
     }
 
-    fun getNewsById(id: String): String {
+    fun getNewsById(id: String) {
         val url = "https://iss.moex.com/iss/sitenews/${id}"
         val client = OkHttpClient()
         val request = Request.Builder().url(url).build()
@@ -67,7 +71,7 @@ class GetNewsViewModel : ViewModel(){
 
             val doc = Jsoup.parse(jsonResponse!!)
             val bodyContent = doc.select("row").attr("body")
-            return Jsoup.parseBodyFragment(bodyContent).body().text()
+            new_state.value =  Jsoup.parseBodyFragment(bodyContent).body().text()
         }
 
     }

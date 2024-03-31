@@ -3,6 +3,7 @@ package com.example.test_compose.viewmodel
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.test_compose.data.MyShareDao
@@ -36,6 +37,8 @@ class MyShareViewModel(
 
     private var _sum = MutableStateFlow(0.0)
     var sum: StateFlow<Double> = _sum
+
+    val sumValue =  mutableStateOf(0.0)
 
 
 
