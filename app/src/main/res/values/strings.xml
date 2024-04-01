@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Test_Compose</string>
+    <string name="app_name">My finances</string>
     <string name="pin_biometric_prompt_title">Login</string>
     <string name="pin_biometric_prompt_description">Log in using your biometric credential</string>
     <string name="pin">PIN</string>
