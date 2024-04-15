@@ -27,30 +27,35 @@ class GetSharesService : ViewModel(){
 
 
     fun getShares() {
-        val url = "https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities"
-        val client = OkHttpClient()
-        val secidToShortName = fetchSecidToShortNameMap(url)
-        val shares = mutableListOf<Share>()
-        val request = Request.Builder().url(url).build()
+        try {
+            val url = "https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities"
+            val client = OkHttpClient()
+            val secidToShortName = fetchSecidToShortNameMap(url)
+            val shares = mutableListOf<Share>()
+            val request = Request.Builder().url(url).build()
 
-        client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful) {
-                Log.i("www", "fetchSecidToShortNameMap: ")
-                throw IOException("Unexpected code $response")
+            client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) {
+                    Log.i("www", "fetchSecidToShortNameMap: ")
+                    //throw IOException("Unexpected code $response")
+                }
+
+                val jsonResponse = response.body?.string()
+                val document = getDocumentElement(jsonResponse!!)
+                val marketData = getData(document, "marketdata")
+                parseMarketData(marketData, secidToShortName, shares)
             }
+            val sortedShares = shares.sortedByDescending { it.valToDay }
 
-            val jsonResponse = response.body?.string()
-            val document = getDocumentElement(jsonResponse!!)
-            val marketData = getData(document, "marketdata")
-            parseMarketData(marketData, secidToShortName, shares)
+            CoroutineScope(Dispatchers.IO).launch {
+
+                withContext(Dispatchers.Main) {
+                    _items.value = sortedShares
+                }
+            }
         }
-        val sortedShares = shares.sortedByDescending { it.valToDay }
+        catch (e : Exception){
 
-        CoroutineScope(Dispatchers.IO).launch {
-
-            withContext(Dispatchers.Main) {
-                _items.value = sortedShares
-            }
         }
 
     }

@@ -26,54 +26,65 @@ class GetNewsViewModel : ViewModel(){
     private val _items = MutableLiveData<List<News>>()
     val items: LiveData<List<News>> get() = _items
     fun getNews(){
-        val url = "https://iss.moex.com/iss/sitenews"
-        val client = OkHttpClient()
-        val request = Request.Builder().url(url).build()
-        val news = mutableListOf<News>()
+        try {
+            val url = "https://iss.moex.com/iss/sitenews"
+            val client = OkHttpClient()
+            val request = Request.Builder().url(url).build()
+            val news = mutableListOf<News>()
 
-        client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful) {
-                throw IOException("Unexpected code $response")
+            client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) {
+                    //throw IOException("Unexpected code $response")
+                }
+                val jsonResponse = response.body?.string()
+
+                val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
+                    InputSource(jsonResponse!!.reader())
+                )
+                val rows = document.getElementsByTagName("row")
+
+                for (i in 0 until rows.length) {
+                    val row = rows.item(i) as Element
+                    val id = row.getAttribute("id")
+                    val title = row.getAttribute("title")
+                    news.add(News(id, Jsoup.parseBodyFragment(title).body().text()))
+                }
             }
-            val jsonResponse = response.body?.string()
+            CoroutineScope(Dispatchers.IO).launch {
 
-            val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
-                InputSource(jsonResponse!!.reader())
-            )
-            val rows = document.getElementsByTagName("row")
-
-            for (i in 0 until rows.length) {
-                val row = rows.item(i) as Element
-                val id = row.getAttribute("id")
-                val title = row.getAttribute("title")
-                news.add(News(id, Jsoup.parseBodyFragment(title).body().text()))
+                withContext(Dispatchers.Main) {
+                    _items.value = news
+                }
             }
         }
-        CoroutineScope(Dispatchers.IO).launch {
+        catch(e : Exception){
 
-            withContext(Dispatchers.Main) {
-                _items.value = news
-            }
         }
     }
 
     fun getNewsById(id: String) {
-        val url = "https://iss.moex.com/iss/sitenews/${id}"
-        val client = OkHttpClient()
-        val request = Request.Builder().url(url).build()
+        try {
+
+            val url = "https://iss.moex.com/iss/sitenews/${id}"
+            val client = OkHttpClient()
+            val request = Request.Builder().url(url).build()
 
 
-        client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful) {
-                throw IOException("Unexpected code $response")
+            client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) {
+                    throw IOException("Unexpected code $response")
+                }
+                val jsonResponse = response.body?.string()
+
+                val doc = Jsoup.parse(jsonResponse!!)
+                val bodyContent = doc.select("row").attr("body")
+                new_state.value = Jsoup.parseBodyFragment(bodyContent).body().text()
             }
-            val jsonResponse = response.body?.string()
 
-            val doc = Jsoup.parse(jsonResponse!!)
-            val bodyContent = doc.select("row").attr("body")
-            new_state.value =  Jsoup.parseBodyFragment(bodyContent).body().text()
         }
+        catch (e : Exception) {
 
+        }
     }
 
 }

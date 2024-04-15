@@ -100,7 +100,7 @@ class MainActivity : FragmentActivity() {
         factoryProducer = {
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>) : T {
-                    return MyShareViewModel(myShareDatabase.dao, getSharesService) as T
+                    return MyShareViewModel(myShareDatabase.dao) as T
                 }
             }
         }

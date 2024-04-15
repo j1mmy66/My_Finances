@@ -21,7 +21,6 @@ import kotlinx.coroutines.launch
 
 class MyShareViewModel(
     private val dao: MyShareDao,
-    private val getSharesService: GetSharesService
 ) : ViewModel() {
 
     val myShares =
@@ -35,8 +34,7 @@ class MyShareViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MyShareState())
 
 
-    private var _sum = MutableStateFlow(0.0)
-    var sum: StateFlow<Double> = _sum
+
 
     val sumValue =  mutableStateOf(0.0)
 

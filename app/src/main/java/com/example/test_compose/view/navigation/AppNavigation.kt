@@ -1,15 +1,25 @@
 package com.example.test_compose.view.navigation
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -17,19 +27,35 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.test_compose.R
+import com.example.test_compose.view.screens.NoInternetScreen
 import com.example.test_compose.view.screens.SettingsScreen
 import com.example.test_compose.view.screens.mainscreens.history.HistoryScreen
 import com.example.test_compose.view.screens.mainscreens.hypotheses.HypothesesScreen
@@ -61,6 +87,30 @@ fun AppNavigation(
 ) {
     val navController = rememberNavController()
     val state by myShareViewModel.state.collectAsState()
+    val context = LocalContext.current
+    val connectivityManager =
+        context.getSystemService(ConnectivityManager::class.java)
+
+
+    var isNetworkAvailable by remember { mutableStateOf(false) }
+
+
+    DisposableEffect(Unit) {
+        val networkCallback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                isNetworkAvailable = true
+            }
+
+            override fun onLost(network: Network) {
+                isNetworkAvailable = false
+            }
+        }
+        connectivityManager?.registerDefaultNetworkCallback(networkCallback)
+        onDispose {
+            connectivityManager?.unregisterNetworkCallback(networkCallback)
+        }
+    }
+    if(isNetworkAvailable) {
 
     Scaffold(
         containerColor = Color(0xFFF0E8FF),
@@ -212,4 +262,10 @@ fun AppNavigation(
 
 
     }
+    }
+    else {
+        NoInternetScreen()
+    }
 }
+
+
