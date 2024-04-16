@@ -4,10 +4,13 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.test_compose.data.MyShareDao
 import com.example.test_compose.data.models.MyShare
+import com.example.test_compose.viewmodel.model.Share
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,6 +24,7 @@ import kotlinx.coroutines.launch
 
 class MyShareViewModel(
     private val dao: MyShareDao,
+    private val getSharesService: GetSharesService
 ) : ViewModel() {
 
     val myShares =
@@ -36,7 +40,26 @@ class MyShareViewModel(
 
 
 
-    val sumValue =  mutableStateOf(0.0)
+    val sumValue :  LiveData<Double> get() = _sumValue
+
+    val _sumValue = MutableLiveData<Double>()
+
+    fun calculateSum() {
+        viewModelScope.launch {
+            val shares = myShares.value
+            var sum = 0.0
+            for (share in shares) {
+                sum += (getSharesService.items.value?.find { it.secid == share.secid }?.lastPrice?.times(
+                    share.count
+                ))
+                    ?: 0.0
+            }
+            _sumValue.value = sum
+        }
+    }
+
+
+
 
 
 

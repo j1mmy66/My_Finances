@@ -20,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,7 +39,9 @@ import com.example.test_compose.viewmodel.MyShareViewModel
 import com.example.test_compose.viewmodel.SettingsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 @SuppressLint("UnrememberedMutableState")
@@ -83,19 +86,10 @@ fun HomeScreen(
 
 
 
-    LaunchedEffect(true) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val shares = myShareViewModel.myShares.value
-            var sum = 0.0
-            for (share in shares) {
-                sum += (getSharesService.items.value?.find { it.secid == share.secid }?.lastPrice?.times(
-                    share.count
-                ))
-                    ?: 0.0
-            }
-            myShareViewModel.sumValue.value = sum
-        }
-    }
+
+    val sum by myShareViewModel.sumValue.observeAsState()
+
+    val rates by getExchanchgeRateViewModel.items.observeAsState()
 
     LaunchedEffect(true) {
         getData()
@@ -109,6 +103,23 @@ fun HomeScreen(
     LaunchedEffect(true) {
         getNews()
     }
+
+    LaunchedEffect(Unit) {
+
+        while (true) {
+            myShareViewModel.calculateSum()
+            delay(1000)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        while(true) {
+            getExchanchgeRateViewModel.getExchangeRate()
+            delay(1000)
+        }
+    }
+
+
 
 
     Scaffold(
@@ -154,11 +165,12 @@ fun HomeScreen(
                         style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp)
                     )
                     Spacer(modifier = Modifier.padding(8.dp))
-
-                    Text(
-                        text = "Total sum: ${"%.1f".format(myShareViewModel.sumValue.value)}₽",
-                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp)
-                    )
+                    if (sum != null) {
+                        Text(
+                            text = "Total sum: ${"%.1f".format(sum)}₽",
+                            style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp)
+                        )
+                    }
                 }
 
 
@@ -190,15 +202,15 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     Text(
-                        text = "$${"%.1f".format(getExchanchgeRateViewModel.items.value?.get(0) ?: 0.0)}",
+                        text = "$${"%.1f".format(rates?.get(0) ?: 0.0)}",
                         style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
                     )
                     Text(
-                        text = "€${"%.1f".format(getExchanchgeRateViewModel.items.value?.get(1) ?: 0.0)}",
+                        text = "€${"%.1f".format(rates?.get(1) ?: 0.0)}",
                         style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
                     )
                     Text(
-                        text = "¥${"%.1f".format(getExchanchgeRateViewModel.items.value?.get(2) ?: 0.0)}",
+                        text = "¥${"%.1f".format(rates?.get(2) ?: 0.0)}",
                         style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
                     )
                 }
